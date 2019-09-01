@@ -6,7 +6,7 @@ int main(){
 
 
     auto m_start = now_msec();
-    LOOP(i,1000000) vd.PB(sin(M_PI*i/100));      // for (int i=0; i<10; ++i) v.push_back(i*10); 
+    LOOP(i,100) vd.PB(sin((M_PI/2) + M_PI*i/100));      // for (int i=0; i<10; ++i) v.push_back(i*10); 
     auto m_dur = dur_msec(m_start, now_msec());
     
     cout << "sin()=" << m_dur << ":msec" << endl;
@@ -19,9 +19,10 @@ int main(){
     auto fv = [](auto v, auto x, auto c){return v - c*x;};
 
     m_start = now_msec();
-    LOOP(i, 1000000) {
+    LOOP(i, 100) {
         x = fx(x,v);
         v = fv(v,x,c);
+        cout << "(" << vd.at(i) << ") " << "(" << x << ") (" << vd.at(i) - x << ") " << endl;
     }
     m_dur = dur_msec(m_start, now_msec());
     cout << "approx=(" << x << "," << v << ") " << m_dur << ":msec" << endl;
