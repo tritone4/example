@@ -1,5 +1,6 @@
 //include
 //------------------------------------------
+#define _USE_MATH_DEFINES
 #include <vector>
 #include <list>
 #include <map>
@@ -21,6 +22,8 @@
 #include <string>
 #include <cstring>
 #include <ctime>
+#include <chrono>
+#include <time.h>
 
 using namespace std;
 
@@ -65,6 +68,11 @@ typedef long long LL;
 //--------------------------------------------
 const double EPS = 1e-10;
 const double PI  = acos(-1.0);
+
+//system clock
+//--------------------------------------------
+auto now_msec = [](){return std::chrono::system_clock::now();};
+auto dur_msec = [](auto start, auto end){ return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();};
 
 //clear memory
 #define CLR(a) memset((a), 0 ,sizeof(a))
