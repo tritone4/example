@@ -71,8 +71,10 @@ const double PI  = acos(-1.0);
 
 //system clock
 //--------------------------------------------
-auto now_msec = [](){return std::chrono::system_clock::now();};
+auto now_tsec = [](){return std::chrono::system_clock::now();};
+auto dur_usec = [](auto start, auto end){ return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();};
 auto dur_msec = [](auto start, auto end){ return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();};
+auto dur_sec = [](auto start, auto end){ return std::chrono::duration_cast<std::chrono::seconds>(end - start).count();};
 
 //clear memory
 #define CLR(a) memset((a), 0 ,sizeof(a))
