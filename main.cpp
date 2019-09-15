@@ -6,61 +6,38 @@ int main(){
     VD vsim;
     VD vdif;
 
+    const auto c = (double)0.965e-3;
+	const auto N = (int)1e+2;
     auto x = (double)1.0;
     auto v = (double)0.0;
-    const auto c = (double)0.00097;
-	const auto N = (int)100;
-
-//    auto t_start = now_tsec();
-    vsin.clear();
-    LOOP(i,N) vsin.PB(sin((M_PI/2) + M_PI*i/N));
-//    auto u_dur = dur_usec(t_start, now_tsec());
-//    auto m_dur = dur_msec(t_start, now_tsec());
-    
-//    cout << "sin()=" << m_dur << ":msec " << u_dur << ":usec" << endl;
-
 
     auto fx = [](auto x, auto v){return x + v;};
     auto fv = [](auto v, auto x, auto c){return v - c*x;};
 
-//    t_start = now_tsec();
-    vsim.clear();
-    LOOP(i, N){
-		x = fx(x,v);
-		v = fv(v,x,c);
-		vsim.PB(x);
-	}
-//    u_dur = dur_usec(t_start, now_tsec());
-//    m_dur = dur_msec(t_start, now_tsec());
 
-//    cout << "sim()=" << m_dur << ":msec " << u_dur << ":usec" << endl;
+//    auto _start = now_tsec();
 
-    vdif.clear();
-    LOOP(i, N) vdif.PB(vsim.at(i) - vsin.at(i));
-//    u_dur = dur_usec(t_start, now_tsec());
-//    m_dur = dur_msec(t_start, now_tsec());
+    vsin.clear(); LOOP(i,N) vsin.PB(sin((PI/2) + PI*i/N));
+//    cout << "sin()=" << dur_usec(_start, now_tsec()) << ":usec" << endl;
 
-//    cout << "dif()=" << m_dur << ":msec " << u_dur << ":usec" << endl;
+//    _start = now_tsec();
+    vsim.clear(); LOOP(i, N){ x = fx(x,v); v = fv(v,x,c); vsim.PB(x); }
+//    cout << "simul=" << dur_usec(_start, now_tsec()) << ":usec" << endl;
 
-//	LOOP(i, N) cout \
-		<< "sin():" << vsin.at(i) \
-		<< " sim():" << vsim.at(i) \
-		<< " dif(" << vdif.at(i) << ")" \
-		<< endl;
+//    _start = now_tsec();
+    vdif.clear(); LOOP(i, N) vdif.PB(vsim.at(i) - vsin.at(i));
+//    cout << "dif()=" << dur_usec(_start, now_tsec()) << ":usec" << endl;
 
-	auto sum = (double)0.0;
-	auto min = (double)0.0;
-	auto max = (double)0.0;
-	auto sqsum = (double)0.0;
-	v = (double)0.0;
-	for ( auto v : vdif ){
-		sum += v;
-		if (v > max) max = v;
-		if (v < min) min = v;
-		sqsum += v*v;
-	}
-	cout << "AVE = " << sum/N \
-		 << " MIN = " << min \
-		 << " MAX = " << max \
-		 << " STDEV = " << sqrt(sqsum) << endl;	
+
+
+    auto minmax = std::minmax_element(ALL(vdif));
+    auto sum = std::accumulate(ALL(vdif),(double)0.0);
+    auto s = (double) 0.0; for ( auto& v : vdif ){s += sqr(v);}
+
+	cout  \
+        << " AVE = " << sum/N \
+        << " MIN = " << *minmax.first \
+        << " MAX = " << *minmax.second \
+        << " STDEV = " << sqrt(s) \
+        << endl;	
 }
